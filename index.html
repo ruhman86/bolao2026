@@ -135,9 +135,17 @@
 <div class="modal-overlay" id="joinModal">
   <div class="modal">
     <h3>⚽ Entrar no Bolão</h3>
+    <div class="notice warning" style="margin-bottom:12px;font-size:12px">
+      Primeira vez? Escolha apelido + senha e guarde bem.<br>
+      Já tem conta? Entre com o mesmo apelido e senha.
+    </div>
     <div class="input-group">
-      <label>Seu apelido</label>
-      <input type="text" id="joinName" placeholder="ex: Boleiro123" maxlength="20" onkeypress="if(event.key==='Enter')confirmJoin()">
+      <label>Apelido</label>
+      <input type="text" id="joinName" placeholder="ex: Boleiro123" maxlength="20" onkeypress="if(event.key==='Enter')document.getElementById('joinPass').focus()">
+    </div>
+    <div class="input-group">
+      <label>Senha</label>
+      <input type="password" id="joinPass" placeholder="mínimo 4 caracteres" maxlength="30" onkeypress="if(event.key==='Enter')confirmJoin()">
     </div>
     <div id="joinError" style="color:#ff6b6b;font-size:12px;margin-bottom:10px;display:none;"></div>
     <button class="btn btn-primary btn-full" id="joinBtn" onclick="confirmJoin()">Entrar 🚀</button>
@@ -344,9 +352,10 @@ async function init() {
   const params = new URLSearchParams(window.location.search);
   GRUPO_ID = params.get('g');
   const savedUser = localStorage.getItem('bolao_user_' + GRUPO_ID);
-  if (savedUser) currentUser = savedUser;
   const savedAdmin = localStorage.getItem('bolao_admin_' + GRUPO_ID);
   if (savedAdmin === '1') isAdmin = true;
+  // Restaura usuário — será revalidado após loadAll
+  if (savedUser) currentUser = savedUser;
 
   if (!GRUPO_ID) {
     showNoGrupo();
@@ -354,6 +363,17 @@ async function init() {
   }
 
   await loadAll();
+  // Valida sessão salva contra hash no banco
+  if (currentUser) {
+    const savedHash = localStorage.getItem('bolao_pass_' + GRUPO_ID + '_' + currentUser);
+    const participant = allParticipants.find(p => p.nome === currentUser);
+    if (participant && participant.pass_hash && savedHash && participant.pass_hash !== savedHash) {
+      // Hash não bate — sessão inválida
+      currentUser = null;
+      localStorage.removeItem('bolao_user_' + GRUPO_ID);
+      toast('Sessão expirada. Entre novamente.', true);
+    }
+  }
   renderAll();
 }
 
@@ -699,25 +719,59 @@ function openJoinModal() {
 
 async function confirmJoin() {
   const name = document.getElementById('joinName').value.trim();
+  const pass = document.getElementById('joinPass').value;
   const err = document.getElementById('joinError');
   const btn = document.getElementById('joinBtn');
-  if (!name || name.length < 2) { err.textContent = 'Mínimo 2 caracteres.'; err.style.display = 'block'; return; }
+
+  if (!name || name.length < 2) { err.textContent = 'Apelido muito curto.'; err.style.display = 'block'; return; }
+  if (!pass || pass.length < 4) { err.textContent = 'Senha mínima de 4 caracteres.'; err.style.display = 'block'; return; }
   err.style.display = 'none';
   btn.disabled = true; btn.textContent = 'Entrando...';
 
-  // Verifica se já existe
+  // Hash simples da senha (não é criptografia forte, mas protege de leitura direta)
+  const passHash = await simpleHash(pass);
+
   const exists = allParticipants.find(p => p.nome === name);
   if (!exists) {
-    await dbPost('participants', { bolao_id: GRUPO_ID, nome: name });
+    // Novo usuário — cria com senha
+    const result = await dbPost('participants', { bolao_id: GRUPO_ID, nome: name, pass_hash: passHash });
+    if (!Array.isArray(result) || result.length === 0) {
+      err.textContent = 'Erro ao criar conta. Tente novamente.';
+      err.style.display = 'block';
+      btn.disabled = false; btn.textContent = 'Entrar 🚀';
+      return;
+    }
+    toast('Conta criada! Bem-vindo, ' + name + '! 🎉');
+  } else {
+    // Usuário existente — verifica senha
+    if (exists.pass_hash && exists.pass_hash !== passHash) {
+      err.textContent = 'Senha incorreta.';
+      err.style.display = 'block';
+      btn.disabled = false; btn.textContent = 'Entrar 🚀';
+      return;
+    }
+    // Se não tem pass_hash (conta antiga), atualiza com a senha fornecida
+    if (!exists.pass_hash) {
+      await dbPatch('participants', 'bolao_id=eq.' + GRUPO_ID + '&nome=eq.' + encodeURIComponent(name), { pass_hash: passHash });
+    }
+    toast('Bem-vindo de volta, ' + name + '! ⚽');
   }
 
   currentUser = name;
   localStorage.setItem('bolao_user_' + GRUPO_ID, name);
+  localStorage.setItem('bolao_pass_' + GRUPO_ID + '_' + name, passHash);
   await loadAll();
   document.getElementById('joinModal').classList.remove('open');
   btn.disabled = false; btn.textContent = 'Entrar 🚀';
-  toast('Bem-vindo, ' + name + '! 🎉');
   renderAll();
+}
+
+// Hash simples usando Web Crypto API
+async function simpleHash(str) {
+  const msgBuffer = new TextEncoder().encode(str);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').substring(0, 32);
 }
 
 // ===== RANKING =====
