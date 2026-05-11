@@ -159,7 +159,7 @@
   <div class="hero-sub" id="bolaoNameDisplay">Carregando...</div>
   <div class="score-legend">
     <div class="score-pill">🎯 Cravada <b>+5pts</b></div>
-    <div class="score-pill">⚖️ Saldo certo <b>+3pts</b></div>
+    <div class="score-pill">⚖️ ⚖️ Saldo certo <b>+3pts</b></div>
     <div class="score-pill">⚽ Gols de um time <b>+2pts</b></div>
     <div class="score-pill">✅ Vencedor/Empate <b>+1pt</b></div>
   </div>
@@ -215,89 +215,89 @@ async function dbDelete(table, filters) {
 // ===== JOGOS =====
 const JOGOS_BASE = [
   // GRUPO A: México, África do Sul, Coreia do Sul, República Tcheca
-  { id: 1,  fase: 'grupo', grupo: 'A', time1: '🇲🇽 México', time2: '🇿🇦 África do Sul', data: '11/Jun 16h', dt: '2026-06-11T16:00' },
-  { id: 2,  fase: 'grupo', grupo: 'A', time1: '🇰🇷 Coreia do Sul', time2: '🇨🇿 Rep. Tcheca', data: '11/Jun 23h', dt: '2026-06-11T23:00' },
-  { id: 3,  fase: 'grupo', grupo: 'A', time1: '🇲🇽 México', time2: '🇰🇷 Coreia do Sul', data: '18/Jun', dt: '2026-06-18T13:00' },
-  { id: 4,  fase: 'grupo', grupo: 'A', time1: '🇿🇦 África do Sul', time2: '🇨🇿 Rep. Tcheca', data: '18/Jun', dt: '2026-06-18T16:00' },
-  { id: 5,  fase: 'grupo', grupo: 'A', time1: '🇲🇽 México', time2: '🇨🇿 Rep. Tcheca', data: '24/Jun', dt: '2026-06-24T20:00' },
-  { id: 6,  fase: 'grupo', grupo: 'A', time1: '🇿🇦 África do Sul', time2: '🇰🇷 Coreia do Sul', data: '24/Jun', dt: '2026-06-24T20:00' },
+  { id: 1,  fase: 'grupo', grupo: 'A', time1: 'MEX México', time2: 'RSA África do Sul', data: '11/Jun 16h', dt: '2026-06-11T16:00' },
+  { id: 2,  fase: 'grupo', grupo: 'A', time1: 'KOR Coreia do Sul', time2: 'CZE Rep. Tcheca', data: '11/Jun 23h', dt: '2026-06-11T23:00' },
+  { id: 3,  fase: 'grupo', grupo: 'A', time1: 'MEX México', time2: 'KOR Coreia do Sul', data: '18/Jun', dt: '2026-06-18T13:00' },
+  { id: 4,  fase: 'grupo', grupo: 'A', time1: 'RSA África do Sul', time2: 'CZE Rep. Tcheca', data: '18/Jun', dt: '2026-06-18T16:00' },
+  { id: 5,  fase: 'grupo', grupo: 'A', time1: 'MEX México', time2: 'CZE Rep. Tcheca', data: '24/Jun', dt: '2026-06-24T20:00' },
+  { id: 6,  fase: 'grupo', grupo: 'A', time1: 'RSA África do Sul', time2: 'KOR Coreia do Sul', data: '24/Jun', dt: '2026-06-24T20:00' },
   // GRUPO B: Canadá, Bósnia, Catar, Suíça
-  { id: 7,  fase: 'grupo', grupo: 'B', time1: '🇨🇦 Canadá', time2: '🇧🇦 Bósnia', data: '12/Jun 16h', dt: '2026-06-12T16:00' },
-  { id: 8,  fase: 'grupo', grupo: 'B', time1: '🇶🇦 Catar', time2: '🇨🇭 Suíça', data: '13/Jun 16h', dt: '2026-06-13T16:00' },
-  { id: 9,  fase: 'grupo', grupo: 'B', time1: '🇨🇦 Canadá', time2: '🇶🇦 Catar', data: '17/Jun', dt: '2026-06-17T13:00' },
-  { id: 10, fase: 'grupo', grupo: 'B', time1: '🇧🇦 Bósnia', time2: '🇨🇭 Suíça', data: '17/Jun', dt: '2026-06-17T16:00' },
-  { id: 11, fase: 'grupo', grupo: 'B', time1: '🇨🇦 Canadá', time2: '🇨🇭 Suíça', data: '22/Jun', dt: '2026-06-22T20:00' },
-  { id: 12, fase: 'grupo', grupo: 'B', time1: '🇧🇦 Bósnia', time2: '🇶🇦 Catar', data: '22/Jun', dt: '2026-06-22T20:00' },
-  // GRUPO C: Brasil, Marrocos, Haiti, Escócia
-  { id: 13, fase: 'grupo', grupo: 'C', time1: '🇧🇷 Brasil', time2: '🇲🇦 Marrocos', data: '13/Jun 19h', dt: '2026-06-13T19:00' },
-  { id: 14, fase: 'grupo', grupo: 'C', time1: '🏴󠁧󠁢󠁳󠁣󠁴󠁿 Escócia', time2: '🇭🇹 Haiti', data: '13/Jun 16h', dt: '2026-06-13T16:00' },
-  { id: 15, fase: 'grupo', grupo: 'C', time1: '🇧🇷 Brasil', time2: '🇭🇹 Haiti', data: '19/Jun', dt: '2026-06-19T13:00' },
-  { id: 16, fase: 'grupo', grupo: 'C', time1: '🇲🇦 Marrocos', time2: '🏴󠁧󠁢󠁳󠁣󠁴󠁿 Escócia', data: '19/Jun', dt: '2026-06-19T16:00' },
-  { id: 17, fase: 'grupo', grupo: 'C', time1: '🇧🇷 Brasil', time2: '🏴󠁧󠁢󠁳󠁣󠁴󠁿 Escócia', data: '24/Jun', dt: '2026-06-24T16:00' },
-  { id: 18, fase: 'grupo', grupo: 'C', time1: '🇲🇦 Marrocos', time2: '🇭🇹 Haiti', data: '24/Jun', dt: '2026-06-24T16:00' },
+  { id: 7,  fase: 'grupo', grupo: 'B', time1: 'CAN Canadá', time2: 'BIH Bósnia', data: '12/Jun 16h', dt: '2026-06-12T16:00' },
+  { id: 8,  fase: 'grupo', grupo: 'B', time1: 'QAT Catar', time2: 'SUI Suíça', data: '13/Jun 16h', dt: '2026-06-13T16:00' },
+  { id: 9,  fase: 'grupo', grupo: 'B', time1: 'CAN Canadá', time2: 'QAT Catar', data: '17/Jun', dt: '2026-06-17T13:00' },
+  { id: 10, fase: 'grupo', grupo: 'B', time1: 'BIH Bósnia', time2: 'SUI Suíça', data: '17/Jun', dt: '2026-06-17T16:00' },
+  { id: 11, fase: 'grupo', grupo: 'B', time1: 'CAN Canadá', time2: 'SUI Suíça', data: '22/Jun', dt: '2026-06-22T20:00' },
+  { id: 12, fase: 'grupo', grupo: 'B', time1: 'BIH Bósnia', time2: 'QAT Catar', data: '22/Jun', dt: '2026-06-22T20:00' },
+  // GRUPO C: Brasil, Marrocos, Haiti, SCO
+  { id: 13, fase: 'grupo', grupo: 'C', time1: 'BRA Brasil', time2: 'MAR Marrocos', data: '13/Jun 19h', dt: '2026-06-13T19:00' },
+  { id: 14, fase: 'grupo', grupo: 'C', time1: ' SCO', time2: 'HAI Haiti', data: '13/Jun 16h', dt: '2026-06-13T16:00' },
+  { id: 15, fase: 'grupo', grupo: 'C', time1: 'BRA Brasil', time2: 'HAI Haiti', data: '19/Jun', dt: '2026-06-19T13:00' },
+  { id: 16, fase: 'grupo', grupo: 'C', time1: 'MAR Marrocos', time2: ' SCO', data: '19/Jun', dt: '2026-06-19T16:00' },
+  { id: 17, fase: 'grupo', grupo: 'C', time1: 'BRA Brasil', time2: ' SCO', data: '24/Jun', dt: '2026-06-24T16:00' },
+  { id: 18, fase: 'grupo', grupo: 'C', time1: 'MAR Marrocos', time2: 'HAI Haiti', data: '24/Jun', dt: '2026-06-24T16:00' },
   // GRUPO D: EUA, Paraguai, Austrália, Turquia
-  { id: 19, fase: 'grupo', grupo: 'D', time1: '🇺🇸 EUA', time2: '🇦🇺 Austrália', data: '12/Jun 19h', dt: '2026-06-12T19:00' },
-  { id: 20, fase: 'grupo', grupo: 'D', time1: '🇵🇾 Paraguai', time2: '🇹🇷 Turquia', data: '12/Jun 22h', dt: '2026-06-12T22:00' },
-  { id: 21, fase: 'grupo', grupo: 'D', time1: '🇺🇸 EUA', time2: '🇵🇾 Paraguai', data: '18/Jun', dt: '2026-06-18T19:00' },
-  { id: 22, fase: 'grupo', grupo: 'D', time1: '🇦🇺 Austrália', time2: '🇹🇷 Turquia', data: '18/Jun', dt: '2026-06-18T22:00' },
-  { id: 23, fase: 'grupo', grupo: 'D', time1: '🇺🇸 EUA', time2: '🇹🇷 Turquia', data: '25/Jun', dt: '2026-06-25T20:00' },
-  { id: 24, fase: 'grupo', grupo: 'D', time1: '🇦🇺 Austrália', time2: '🇵🇾 Paraguai', data: '25/Jun', dt: '2026-06-25T20:00' },
+  { id: 19, fase: 'grupo', grupo: 'D', time1: 'USA EUA', time2: 'AUS Austrália', data: '12/Jun 19h', dt: '2026-06-12T19:00' },
+  { id: 20, fase: 'grupo', grupo: 'D', time1: 'PAR Paraguai', time2: 'TUR Turquia', data: '12/Jun 22h', dt: '2026-06-12T22:00' },
+  { id: 21, fase: 'grupo', grupo: 'D', time1: 'USA EUA', time2: 'PAR Paraguai', data: '18/Jun', dt: '2026-06-18T19:00' },
+  { id: 22, fase: 'grupo', grupo: 'D', time1: 'AUS Austrália', time2: 'TUR Turquia', data: '18/Jun', dt: '2026-06-18T22:00' },
+  { id: 23, fase: 'grupo', grupo: 'D', time1: 'USA EUA', time2: 'TUR Turquia', data: '25/Jun', dt: '2026-06-25T20:00' },
+  { id: 24, fase: 'grupo', grupo: 'D', time1: 'AUS Austrália', time2: 'PAR Paraguai', data: '25/Jun', dt: '2026-06-25T20:00' },
   // GRUPO E: Alemanha, Curaçao, Costa do Marfim, Equador
-  { id: 25, fase: 'grupo', grupo: 'E', time1: '🇩🇪 Alemanha', time2: '🇪🇨 Equador', data: '14/Jun', dt: '2026-06-14T13:00' },
-  { id: 26, fase: 'grupo', grupo: 'E', time1: '🇨🇮 Costa do Marfim', time2: '🇨🇼 Curaçao', data: '14/Jun', dt: '2026-06-14T16:00' },
-  { id: 27, fase: 'grupo', grupo: 'E', time1: '🇩🇪 Alemanha', time2: '🇨🇮 Costa do Marfim', data: '20/Jun', dt: '2026-06-20T13:00' },
-  { id: 28, fase: 'grupo', grupo: 'E', time1: '🇪🇨 Equador', time2: '🇨🇼 Curaçao', data: '20/Jun', dt: '2026-06-20T16:00' },
-  { id: 29, fase: 'grupo', grupo: 'E', time1: '🇩🇪 Alemanha', time2: '🇨🇼 Curaçao', data: '25/Jun', dt: '2026-06-25T16:00' },
-  { id: 30, fase: 'grupo', grupo: 'E', time1: '🇨🇮 Costa do Marfim', time2: '🇪🇨 Equador', data: '25/Jun', dt: '2026-06-25T16:00' },
+  { id: 25, fase: 'grupo', grupo: 'E', time1: 'GER Alemanha', time2: 'ECU Equador', data: '14/Jun', dt: '2026-06-14T13:00' },
+  { id: 26, fase: 'grupo', grupo: 'E', time1: 'CIV Costa do Marfim', time2: 'CUW Curaçao', data: '14/Jun', dt: '2026-06-14T16:00' },
+  { id: 27, fase: 'grupo', grupo: 'E', time1: 'GER Alemanha', time2: 'CIV Costa do Marfim', data: '20/Jun', dt: '2026-06-20T13:00' },
+  { id: 28, fase: 'grupo', grupo: 'E', time1: 'ECU Equador', time2: 'CUW Curaçao', data: '20/Jun', dt: '2026-06-20T16:00' },
+  { id: 29, fase: 'grupo', grupo: 'E', time1: 'GER Alemanha', time2: 'CUW Curaçao', data: '25/Jun', dt: '2026-06-25T16:00' },
+  { id: 30, fase: 'grupo', grupo: 'E', time1: 'CIV Costa do Marfim', time2: 'ECU Equador', data: '25/Jun', dt: '2026-06-25T16:00' },
   // GRUPO F: Holanda, Japão, Suécia, Tunísia
-  { id: 31, fase: 'grupo', grupo: 'F', time1: '🇳🇱 Holanda', time2: '🇯🇵 Japão', data: '14/Jun', dt: '2026-06-14T19:00' },
-  { id: 32, fase: 'grupo', grupo: 'F', time1: '🇸🇪 Suécia', time2: '🇹🇳 Tunísia', data: '14/Jun', dt: '2026-06-14T22:00' },
-  { id: 33, fase: 'grupo', grupo: 'F', time1: '🇳🇱 Holanda', time2: '🇸🇪 Suécia', data: '20/Jun', dt: '2026-06-20T19:00' },
-  { id: 34, fase: 'grupo', grupo: 'F', time1: '🇯🇵 Japão', time2: '🇹🇳 Tunísia', data: '20/Jun', dt: '2026-06-20T22:00' },
-  { id: 35, fase: 'grupo', grupo: 'F', time1: '🇳🇱 Holanda', time2: '🇹🇳 Tunísia', data: '26/Jun', dt: '2026-06-26T20:00' },
-  { id: 36, fase: 'grupo', grupo: 'F', time1: '🇯🇵 Japão', time2: '🇸🇪 Suécia', data: '26/Jun', dt: '2026-06-26T20:00' },
+  { id: 31, fase: 'grupo', grupo: 'F', time1: 'NED Holanda', time2: 'JPN Japão', data: '14/Jun', dt: '2026-06-14T19:00' },
+  { id: 32, fase: 'grupo', grupo: 'F', time1: 'SWE Suécia', time2: 'TUN Tunísia', data: '14/Jun', dt: '2026-06-14T22:00' },
+  { id: 33, fase: 'grupo', grupo: 'F', time1: 'NED Holanda', time2: 'SWE Suécia', data: '20/Jun', dt: '2026-06-20T19:00' },
+  { id: 34, fase: 'grupo', grupo: 'F', time1: 'JPN Japão', time2: 'TUN Tunísia', data: '20/Jun', dt: '2026-06-20T22:00' },
+  { id: 35, fase: 'grupo', grupo: 'F', time1: 'NED Holanda', time2: 'TUN Tunísia', data: '26/Jun', dt: '2026-06-26T20:00' },
+  { id: 36, fase: 'grupo', grupo: 'F', time1: 'JPN Japão', time2: 'SWE Suécia', data: '26/Jun', dt: '2026-06-26T20:00' },
   // GRUPO G: Bélgica, Egito, Irã, Nova Zelândia
-  { id: 37, fase: 'grupo', grupo: 'G', time1: '🇧🇪 Bélgica', time2: '🇮🇷 Irã', data: '15/Jun', dt: '2026-06-15T13:00' },
-  { id: 38, fase: 'grupo', grupo: 'G', time1: '🇪🇬 Egito', time2: '🇳🇿 Nova Zelândia', data: '15/Jun', dt: '2026-06-15T16:00' },
-  { id: 39, fase: 'grupo', grupo: 'G', time1: '🇧🇪 Bélgica', time2: '🇪🇬 Egito', data: '21/Jun', dt: '2026-06-21T13:00' },
-  { id: 40, fase: 'grupo', grupo: 'G', time1: '🇮🇷 Irã', time2: '🇳🇿 Nova Zelândia', data: '21/Jun', dt: '2026-06-21T16:00' },
-  { id: 41, fase: 'grupo', grupo: 'G', time1: '🇧🇪 Bélgica', time2: '🇳🇿 Nova Zelândia', data: '26/Jun', dt: '2026-06-26T16:00' },
-  { id: 42, fase: 'grupo', grupo: 'G', time1: '🇪🇬 Egito', time2: '🇮🇷 Irã', data: '26/Jun', dt: '2026-06-26T16:00' },
+  { id: 37, fase: 'grupo', grupo: 'G', time1: 'BEL Bélgica', time2: 'IRI Irã', data: '15/Jun', dt: '2026-06-15T13:00' },
+  { id: 38, fase: 'grupo', grupo: 'G', time1: 'EGY Egito', time2: 'NZL Nova Zelândia', data: '15/Jun', dt: '2026-06-15T16:00' },
+  { id: 39, fase: 'grupo', grupo: 'G', time1: 'BEL Bélgica', time2: 'EGY Egito', data: '21/Jun', dt: '2026-06-21T13:00' },
+  { id: 40, fase: 'grupo', grupo: 'G', time1: 'IRI Irã', time2: 'NZL Nova Zelândia', data: '21/Jun', dt: '2026-06-21T16:00' },
+  { id: 41, fase: 'grupo', grupo: 'G', time1: 'BEL Bélgica', time2: 'NZL Nova Zelândia', data: '26/Jun', dt: '2026-06-26T16:00' },
+  { id: 42, fase: 'grupo', grupo: 'G', time1: 'EGY Egito', time2: 'IRI Irã', data: '26/Jun', dt: '2026-06-26T16:00' },
   // GRUPO H: Espanha, Cabo Verde, Arábia Saudita, Uruguai
-  { id: 43, fase: 'grupo', grupo: 'H', time1: '🇪🇸 Espanha', time2: '🇺🇾 Uruguai', data: '15/Jun', dt: '2026-06-15T19:00' },
-  { id: 44, fase: 'grupo', grupo: 'H', time1: '🇨🇻 Cabo Verde', time2: '🇸🇦 Arábia Saudita', data: '15/Jun', dt: '2026-06-15T22:00' },
-  { id: 45, fase: 'grupo', grupo: 'H', time1: '🇪🇸 Espanha', time2: '🇨🇻 Cabo Verde', data: '21/Jun', dt: '2026-06-21T19:00' },
-  { id: 46, fase: 'grupo', grupo: 'H', time1: '🇺🇾 Uruguai', time2: '🇸🇦 Arábia Saudita', data: '21/Jun', dt: '2026-06-21T22:00' },
-  { id: 47, fase: 'grupo', grupo: 'H', time1: '🇪🇸 Espanha', time2: '🇸🇦 Arábia Saudita', data: '27/Jun', dt: '2026-06-27T20:00' },
-  { id: 48, fase: 'grupo', grupo: 'H', time1: '🇺🇾 Uruguai', time2: '🇨🇻 Cabo Verde', data: '27/Jun', dt: '2026-06-27T20:00' },
+  { id: 43, fase: 'grupo', grupo: 'H', time1: 'ESP Espanha', time2: 'URU Uruguai', data: '15/Jun', dt: '2026-06-15T19:00' },
+  { id: 44, fase: 'grupo', grupo: 'H', time1: 'CPV Cabo Verde', time2: 'KSA Arábia Saudita', data: '15/Jun', dt: '2026-06-15T22:00' },
+  { id: 45, fase: 'grupo', grupo: 'H', time1: 'ESP Espanha', time2: 'CPV Cabo Verde', data: '21/Jun', dt: '2026-06-21T19:00' },
+  { id: 46, fase: 'grupo', grupo: 'H', time1: 'URU Uruguai', time2: 'KSA Arábia Saudita', data: '21/Jun', dt: '2026-06-21T22:00' },
+  { id: 47, fase: 'grupo', grupo: 'H', time1: 'ESP Espanha', time2: 'KSA Arábia Saudita', data: '27/Jun', dt: '2026-06-27T20:00' },
+  { id: 48, fase: 'grupo', grupo: 'H', time1: 'URU Uruguai', time2: 'CPV Cabo Verde', data: '27/Jun', dt: '2026-06-27T20:00' },
   // GRUPO I: França, Senegal, Iraque, Noruega
-  { id: 49, fase: 'grupo', grupo: 'I', time1: '🇫🇷 França', time2: '🇸🇳 Senegal', data: '16/Jun', dt: '2026-06-16T13:00' },
-  { id: 50, fase: 'grupo', grupo: 'I', time1: '🇳🇴 Noruega', time2: '🇮🇶 Iraque', data: '16/Jun', dt: '2026-06-16T16:00' },
-  { id: 51, fase: 'grupo', grupo: 'I', time1: '🇫🇷 França', time2: '🇳🇴 Noruega', data: '22/Jun', dt: '2026-06-22T13:00' },
-  { id: 52, fase: 'grupo', grupo: 'I', time1: '🇸🇳 Senegal', time2: '🇮🇶 Iraque', data: '22/Jun', dt: '2026-06-22T16:00' },
-  { id: 53, fase: 'grupo', grupo: 'I', time1: '🇫🇷 França', time2: '🇮🇶 Iraque', data: '27/Jun', dt: '2026-06-27T16:00' },
-  { id: 54, fase: 'grupo', grupo: 'I', time1: '🇸🇳 Senegal', time2: '🇳🇴 Noruega', data: '27/Jun', dt: '2026-06-27T16:00' },
+  { id: 49, fase: 'grupo', grupo: 'I', time1: 'FRA França', time2: 'SEN Senegal', data: '16/Jun', dt: '2026-06-16T13:00' },
+  { id: 50, fase: 'grupo', grupo: 'I', time1: 'NOR Noruega', time2: 'IRQ Iraque', data: '16/Jun', dt: '2026-06-16T16:00' },
+  { id: 51, fase: 'grupo', grupo: 'I', time1: 'FRA França', time2: 'NOR Noruega', data: '22/Jun', dt: '2026-06-22T13:00' },
+  { id: 52, fase: 'grupo', grupo: 'I', time1: 'SEN Senegal', time2: 'IRQ Iraque', data: '22/Jun', dt: '2026-06-22T16:00' },
+  { id: 53, fase: 'grupo', grupo: 'I', time1: 'FRA França', time2: 'IRQ Iraque', data: '27/Jun', dt: '2026-06-27T16:00' },
+  { id: 54, fase: 'grupo', grupo: 'I', time1: 'SEN Senegal', time2: 'NOR Noruega', data: '27/Jun', dt: '2026-06-27T16:00' },
   // GRUPO J: Argentina, Argélia, Áustria, Jordânia
-  { id: 55, fase: 'grupo', grupo: 'J', time1: '🇦🇷 Argentina', time2: '🇩🇿 Argélia', data: '16/Jun', dt: '2026-06-16T19:00' },
-  { id: 56, fase: 'grupo', grupo: 'J', time1: '🇦🇹 Áustria', time2: '🇯🇴 Jordânia', data: '16/Jun', dt: '2026-06-16T22:00' },
-  { id: 57, fase: 'grupo', grupo: 'J', time1: '🇦🇷 Argentina', time2: '🇦🇹 Áustria', data: '22/Jun', dt: '2026-06-22T19:00' },
-  { id: 58, fase: 'grupo', grupo: 'J', time1: '🇩🇿 Argélia', time2: '🇯🇴 Jordânia', data: '22/Jun', dt: '2026-06-22T22:00' },
-  { id: 59, fase: 'grupo', grupo: 'J', time1: '🇦🇷 Argentina', time2: '🇯🇴 Jordânia', data: '27/Jun', dt: '2026-06-27T20:00' },
-  { id: 60, fase: 'grupo', grupo: 'J', time1: '🇩🇿 Argélia', time2: '🇦🇹 Áustria', data: '27/Jun', dt: '2026-06-27T20:00' },
+  { id: 55, fase: 'grupo', grupo: 'J', time1: 'ARG Argentina', time2: 'ALG Argélia', data: '16/Jun', dt: '2026-06-16T19:00' },
+  { id: 56, fase: 'grupo', grupo: 'J', time1: 'AUT Áustria', time2: 'JOR Jordânia', data: '16/Jun', dt: '2026-06-16T22:00' },
+  { id: 57, fase: 'grupo', grupo: 'J', time1: 'ARG Argentina', time2: 'AUT Áustria', data: '22/Jun', dt: '2026-06-22T19:00' },
+  { id: 58, fase: 'grupo', grupo: 'J', time1: 'ALG Argélia', time2: 'JOR Jordânia', data: '22/Jun', dt: '2026-06-22T22:00' },
+  { id: 59, fase: 'grupo', grupo: 'J', time1: 'ARG Argentina', time2: 'JOR Jordânia', data: '27/Jun', dt: '2026-06-27T20:00' },
+  { id: 60, fase: 'grupo', grupo: 'J', time1: 'ALG Argélia', time2: 'AUT Áustria', data: '27/Jun', dt: '2026-06-27T20:00' },
   // GRUPO K: Portugal, RD Congo, Uzbequistão, Colômbia
-  { id: 61, fase: 'grupo', grupo: 'K', time1: '🇵🇹 Portugal', time2: '🇨🇴 Colômbia', data: '17/Jun', dt: '2026-06-17T13:00' },
-  { id: 62, fase: 'grupo', grupo: 'K', time1: '🇨🇩 RD Congo', time2: '🇺🇿 Uzbequistão', data: '17/Jun', dt: '2026-06-17T16:00' },
-  { id: 63, fase: 'grupo', grupo: 'K', time1: '🇵🇹 Portugal', time2: '🇨🇩 RD Congo', data: '23/Jun', dt: '2026-06-23T13:00' },
-  { id: 64, fase: 'grupo', grupo: 'K', time1: '🇨🇴 Colômbia', time2: '🇺🇿 Uzbequistão', data: '23/Jun', dt: '2026-06-23T16:00' },
-  { id: 65, fase: 'grupo', grupo: 'K', time1: '🇵🇹 Portugal', time2: '🇺🇿 Uzbequistão', data: '28/Jun', dt: '2026-06-28T20:00' },
-  { id: 66, fase: 'grupo', grupo: 'K', time1: '🇨🇩 RD Congo', time2: '🇨🇴 Colômbia', data: '28/Jun', dt: '2026-06-28T20:00' },
-  // GRUPO L: Inglaterra, Croácia, Panamá, Gana
-  { id: 67, fase: 'grupo', grupo: 'L', time1: '🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra', time2: '🇬🇭 Gana', data: '17/Jun', dt: '2026-06-17T19:00' },
-  { id: 68, fase: 'grupo', grupo: 'L', time1: '🇭🇷 Croácia', time2: '🇵🇦 Panamá', data: '17/Jun', dt: '2026-06-17T22:00' },
-  { id: 69, fase: 'grupo', grupo: 'L', time1: '🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra', time2: '🇭🇷 Croácia', data: '23/Jun', dt: '2026-06-23T19:00' },
-  { id: 70, fase: 'grupo', grupo: 'L', time1: '🇬🇭 Gana', time2: '🇵🇦 Panamá', data: '23/Jun', dt: '2026-06-23T22:00' },
-  { id: 71, fase: 'grupo', grupo: 'L', time1: '🏴󠁧󠁢󠁥󠁮󠁧󠁿 Inglaterra', time2: '🇵🇦 Panamá', data: '28/Jun', dt: '2026-06-28T16:00' },
-  { id: 72, fase: 'grupo', grupo: 'L', time1: '🇬🇭 Gana', time2: '🇭🇷 Croácia', data: '28/Jun', dt: '2026-06-28T16:00' },
+  { id: 61, fase: 'grupo', grupo: 'K', time1: 'POR Portugal', time2: 'COL Colômbia', data: '17/Jun', dt: '2026-06-17T13:00' },
+  { id: 62, fase: 'grupo', grupo: 'K', time1: 'COD RD Congo', time2: 'UZB Uzbequistão', data: '17/Jun', dt: '2026-06-17T16:00' },
+  { id: 63, fase: 'grupo', grupo: 'K', time1: 'POR Portugal', time2: 'COD RD Congo', data: '23/Jun', dt: '2026-06-23T13:00' },
+  { id: 64, fase: 'grupo', grupo: 'K', time1: 'COL Colômbia', time2: 'UZB Uzbequistão', data: '23/Jun', dt: '2026-06-23T16:00' },
+  { id: 65, fase: 'grupo', grupo: 'K', time1: 'POR Portugal', time2: 'UZB Uzbequistão', data: '28/Jun', dt: '2026-06-28T20:00' },
+  { id: 66, fase: 'grupo', grupo: 'K', time1: 'COD RD Congo', time2: 'COL Colômbia', data: '28/Jun', dt: '2026-06-28T20:00' },
+  // GRUPO L: ENG, Croácia, Panamá, Gana
+  { id: 67, fase: 'grupo', grupo: 'L', time1: ' ENG', time2: 'GHA Gana', data: '17/Jun', dt: '2026-06-17T19:00' },
+  { id: 68, fase: 'grupo', grupo: 'L', time1: 'CRO Croácia', time2: 'PAN Panamá', data: '17/Jun', dt: '2026-06-17T22:00' },
+  { id: 69, fase: 'grupo', grupo: 'L', time1: ' ENG', time2: 'CRO Croácia', data: '23/Jun', dt: '2026-06-23T19:00' },
+  { id: 70, fase: 'grupo', grupo: 'L', time1: 'GHA Gana', time2: 'PAN Panamá', data: '23/Jun', dt: '2026-06-23T22:00' },
+  { id: 71, fase: 'grupo', grupo: 'L', time1: ' ENG', time2: 'PAN Panamá', data: '28/Jun', dt: '2026-06-28T16:00' },
+  { id: 72, fase: 'grupo', grupo: 'L', time1: 'GHA Gana', time2: 'CRO Croácia', data: '28/Jun', dt: '2026-06-28T16:00' },
   // 16-AVOS (Round of 32)
   { id: 101, fase: 'dezesseis', grupo: null, time1: '1º A', time2: '2º B', data: '29/Jun', dt: '2026-06-29T13:00' },
   { id: 102, fase: 'dezesseis', grupo: null, time1: '1º C', time2: '2º D', data: '29/Jun', dt: '2026-06-29T17:00' },
@@ -432,24 +432,24 @@ function calcPontos(jogoId, palpite) {
   if (isNaN(rg1)||isNaN(rg2)||isNaN(pg1)||isNaN(pg2)) return null;
 
   // 1. Cravada
-  if (pg1 === rg1 && pg2 === rg2) return { total: 5, tipo: 'exato', label: '🎯 Cravada!' };
+  if (pg1 === rg1 && pg2 === rg2) return { total: 5, tipo: 'exato', label: '🎯 🎯 Cravada!' };
 
-  // 2. Saldo certo (diferença igual, mas placar diferente)
+  // 2. ⚖️ Saldo certo (diferença igual, mas placar diferente)
   const rSaldo = rg1 - rg2;
   const pSaldo = pg1 - pg2;
-  if (pSaldo === rSaldo) return { total: 3, tipo: 'saldo', label: '⚖️ Saldo certo' };
+  if (pSaldo === rSaldo) return { total: 3, tipo: 'saldo', label: '⚖️ ⚖️ Saldo certo' };
 
   // 3. Acertou gols de um time (pega o melhor: ambos = 2+2 não existe pois seria cravada; um lado = 2pts)
   const acertouG1 = pg1 === rg1;
   const acertouG2 = pg2 === rg2;
-  if (acertouG1 || acertouG2) return { total: 2, tipo: 'gols', label: acertouG1 && acertouG2 ? '⚽⚽ Gols certos' : '⚽ Gols certos' };
+  if (acertouG1 || acertouG2) return { total: 2, tipo: 'gols', label: acertouG1 && acertouG2 ? '⚽⚽ ⚽ Gols certos' : '⚽ ⚽ Gols certos' };
 
   // 4. Vencedor/empate certo
   const resV = rg1>rg2?1:rg1<rg2?2:0;
   const palV = pg1>pg2?1:pg1<pg2?2:0;
-  if (resV === palV) return { total: 1, tipo: 'vencedor', label: resV===0?'🤝 Empate certo':'✅ Vencedor certo' };
+  if (resV === palV) return { total: 1, tipo: 'vencedor', label: resV===0?'🤝 🤝 Empate certo':'✅ ✅ Vencedor certo' };
 
-  return { total: 0, tipo: 'zero', label: '❌ Sem pontos' };
+  return { total: 0, tipo: 'zero', label: '[X] Sem pontos' };
 }
 
 // ===== SIMULAÇÃO DE GRUPO =====
@@ -787,7 +787,7 @@ async function confirmJoin() {
       btn.disabled = false; btn.textContent = 'Entrar 🚀';
       return;
     }
-    toast('Conta criada! Bem-vindo, ' + name + '! 🎉');
+    toast('Conta criada! Bem-vindo, ' + name + '! !');
   } else {
     // Usuário existente — verifica senha
     if (exists.pass_hash && exists.pass_hash !== passHash) {
@@ -857,7 +857,7 @@ function renderParticipantes() {
     <div class="share-box">${shareUrl}</div>
     <button class="btn btn-share" onclick="shareWhatsApp()">📲 Compartilhar no WhatsApp</button>
     <button class="btn btn-copy" onclick="copyLink()">🔗 Copiar link</button>
-    <div style="font-size:11px;color:var(--muted);margin-top:10px">💡 O nome do bolão aparece no link. Mude o nome em Configurações para personalizar.</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:10px">[i] O nome do bolão aparece no link. Mude o nome em Configurações para personalizar.</div>
   </div>
 
   <div class="card">
@@ -986,7 +986,7 @@ function renderAdmin() {
             <input type="number" id="res_g2_${jogo.id}" value="${res.gols2!==undefined?res.gols2:''}" min="0" max="20" placeholder="—">
           </div>
           <div class="input-group" style="flex:0 0 auto;padding-top:22px">
-            <button class="btn btn-primary btn-sm" onclick="salvarResultado(${jogo.id})">✓</button>
+            <button class="btn btn-primary btn-sm" onclick="salvarResultado(${jogo.id})">v</button>
           </div>
         </div>
       </div>`;
@@ -1041,7 +1041,7 @@ function renderAdmin() {
         padding:5px 10px;border-radius:20px;border:1px solid ${sel ? 'var(--amarelo)' : 'var(--border)'};
         background:${sel ? 'rgba(255,214,0,0.15)' : 'var(--surface)'};
         color:${sel ? 'var(--amarelo)' : 'var(--muted)'};font-size:12px;cursor:pointer;font-weight:600">
-        ${sel ? '🥉 ' : ''}${time} <span style="font-size:10px;opacity:.6">${grupo}</span>
+        ${sel ? '3o ' : ''}${time} <span style="font-size:10px;opacity:.6">${grupo}</span>
       </button>`;
     });
   });
@@ -1075,7 +1075,7 @@ function checkAdmin() {
     localStorage.setItem('bolao_admin_' + GRUPO_ID, '1');
     renderAdmin();
   } else {
-    toast('Senha incorreta ❌', true);
+    toast('Senha incorreta [X]', true);
   }
 }
 
@@ -1115,7 +1115,7 @@ async function updateConfig(field, value) {
   bolaoConfig[field] = value;
   await dbPatch('boloes', 'id=eq.' + GRUPO_ID, { [field]: value });
   if (field === 'nome') document.getElementById('bolaoNameDisplay').textContent = value;
-  toast('Salvo ✓');
+  toast('Salvo v');
 }
 
 async function salvarResultado(jogoId) {
