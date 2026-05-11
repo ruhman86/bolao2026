@@ -165,11 +165,11 @@
   </div>
 </div>
 
-<div class="nav-tabs">
+<div class="nav-tabs" id="navTabs">
   <button class="nav-tab active" onclick="showView('palpites')">Palpites</button>
   <button class="nav-tab" onclick="showView('ranking')">Ranking</button>
   <button class="nav-tab" onclick="showView('participantes')">Galera</button>
-  <button class="nav-tab" onclick="showView('admin')">Admin</button>
+  <button class="nav-tab" id="adminTab" style="display:none" onclick="showView('admin')">Admin</button>
 </div>
 
 <div class="view active" id="view-palpites"><div id="palpitesContent"></div></div>
@@ -381,7 +381,14 @@ async function init() {
       currentUser = null; localStorage.removeItem('bolao_user_' + GRUPO_ID);
     }
   }
-  document.getElementById('bolaoNameDisplay').textContent = bolaoConfig.nome || 'Bolao Copa 2026';
+  // Nome: prioriza parâmetro URL ?nome=, depois config do banco
+  const urlNome = new URLSearchParams(window.location.search).get('nome');
+  document.getElementById('bolaoNameDisplay').textContent = urlNome || bolaoConfig.nome || 'Bolão Copa 2026';
+
+  // Mostra aba admin só para admin
+  const adminTab = document.getElementById('adminTab');
+  if (adminTab) adminTab.style.display = isAdmin ? '' : 'none';
+
   renderPalpites();
   if (isAdmin) showView('admin');
 }
@@ -847,13 +854,20 @@ function renderRanking() {
 // ===== PARTICIPANTES =====
 function renderParticipantes() {
   const el = document.getElementById('participantesContent');
-  const shareUrl = getShareUrl();
+  const shareUrl = getShareUrl(true); // link com nome customizado
   let html = `<div class="card">
     <div class="card-title">Compartilhar Bolão</div>
-    <div class="card-sub">Manda pra galera entrar!</div>
+    <div class="card-sub">Link para enviar aos participantes</div>
     <div class="share-box">${shareUrl}</div>
     <button class="btn btn-share" onclick="shareWhatsApp()">📲 Compartilhar no WhatsApp</button>
     <button class="btn btn-copy" onclick="copyLink()">🔗 Copiar link</button>
+    <div style="font-size:11px;color:var(--muted);margin-top:10px">💡 O nome do bolão aparece no link. Mude o nome em Configurações para personalizar.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📊 Ranking no WhatsApp</div>
+    <div class="card-sub">Abre o WhatsApp com o ranking atual formatado</div>
+    <button class="btn btn-share" style="margin-top:0" onclick="shareRanking()">📲 Enviar Ranking</button>
   </div>`;
 
   if (allParticipants.length > 0) {
@@ -870,16 +884,47 @@ function renderParticipantes() {
   el.innerHTML = html;
 }
 
-function getShareUrl() {
-  return window.location.href.split('?')[0] + '?g=' + GRUPO_ID;
+function getShareUrl(comNome) {
+  const base = window.location.href.split('?')[0] + '?g=' + GRUPO_ID;
+  if (comNome) {
+    const nomeUrl = encodeURIComponent(bolaoConfig.nome || '');
+    return base + '&nome=' + nomeUrl;
+  }
+  return base;
 }
 function shareWhatsApp() {
-  const url = getShareUrl();
+  const url = getShareUrl(true);
   const txt = encodeURIComponent('⚽ *' + bolaoConfig.nome + '* — Copa do Mundo 2026!\nFaz seu palpite: ' + url);
   window.open('https://wa.me/?text=' + txt, '_blank');
 }
 function copyLink() {
-  navigator.clipboard.writeText(getShareUrl()).then(() => toast('Link copiado! 🔗'));
+  navigator.clipboard.writeText(getShareUrl(true)).then(() => toast('Link copiado! 🔗'));
+}
+
+function shareRanking() {
+  if (!allParticipants.length) { toast('Nenhum participante ainda', true); return; }
+
+  const ranking = [...allParticipants]
+    .map(p => ({ nome: p.nome, pts: calcTotalPontos(p.nome) }))
+    .sort((a, b) => b.pts - a.pts);
+
+  const medalhas = ['🥇','🥈','🥉'];
+  const fase = { grupo: 'Fase de Grupos', matamata: 'Mata-mata', ambas: 'Fase completa', fechado: 'Encerrado' };
+  const rodada = fase[bolaoConfig.fase_aberta] || '';
+
+  let txt = `🏆 *${bolaoConfig.nome}* — Ranking\n`;
+  txt += `📅 ${rodada}\n`;
+  txt += `${'─'.repeat(22)}\n`;
+
+  ranking.forEach((p, i) => {
+    const pos = medalhas[i] || `${i + 1}º`;
+    txt += `${pos} ${p.nome} — *${p.pts}pts*\n`;
+  });
+
+  txt += `${'─'.repeat(22)}\n`;
+  txt += `🔗 ${getShareUrl(true)}`;
+
+  window.open('https://wa.me/?text=' + encodeURIComponent(txt), '_blank');
 }
 
 // ===== ADMIN =====
@@ -889,12 +934,13 @@ function renderAdmin() {
     const semBolao = !GRUPO_ID || !bolaoConfig.admin_pass;
     el.innerHTML = `<div class="card">
       <div class="card-title">Acesso Admin</div>
-      <div class="card-sub">Senha para gerenciar o bolão</div>
-      ${!semBolao ? `<div class="input-group"><label>Senha</label><input type="password" id="adminPassInput" placeholder="senha..." onkeypress="if(event.key==='Enter')checkAdmin()"></div>
-      <button class="btn btn-primary" onclick="checkAdmin()">Entrar</button>` : ''}
-      <div style="margin-top:12px"><button class="btn ${semBolao ? 'btn-primary btn-full' : 'btn-secondary btn-sm'}" onclick="setupAdmin()">
-        ${semBolao ? '⚽ Criar meu bolão' : 'Criar bolão / Primeira vez'}
-      </button></div>
+      <div class="card-sub">Restrito ao organizador</div>
+      ${!semBolao ? `
+        <div class="input-group"><label>Senha</label><input type="password" id="adminPassInput" placeholder="senha..." onkeypress="if(event.key==='Enter')checkAdmin()"></div>
+        <button class="btn btn-primary" onclick="checkAdmin()">Entrar</button>
+      ` : `
+        <button class="btn btn-primary btn-full" onclick="setupAdmin()">⚽ Criar meu bolão</button>
+      `}
     </div>`;
     return;
   }
@@ -919,12 +965,6 @@ function renderAdmin() {
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-title">Criar novo bolão</div>
-    <div class="card-sub">Para mandar pra um grupo diferente</div>
-    <div class="input-group"><label>Nome</label><input type="text" id="newBolaoName" placeholder="ex: Bolão Família"></div>
-    <button class="btn btn-primary" onclick="criarNovoBolao()">+ Criar e copiar link</button>
-  </div>
 
   <div class="card">
     <div class="card-title">Inserir Resultados</div>
