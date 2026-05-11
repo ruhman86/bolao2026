@@ -351,31 +351,7 @@ let allParticipants = []; // [{nome, joined_at}]
 async function init() {
   const params = new URLSearchParams(window.location.search);
   GRUPO_ID = params.get('g');
-  const savedUser = localStorage.getItem('bolao_user_' + GRUPO_ID);
-  const savedAdmin = localStorage.getItem('bolao_admin_' + GRUPO_ID);
-  if (savedAdmin === '1') isAdmin = true;
-  // Restaura usuário — será revalidado após loadAll
-  if (savedUser) currentUser = savedUser;
 
-  if (!GRUPO_ID) {
-    showNoGrupo();
-    return;
-  }
-
-  await loadAll();
-  // Valida sessão salva contra hash no banco
-  if (currentUser) {
-    const savedHash = localStorage.getItem('bolao_pass_' + GRUPO_ID + '_' + currentUser);
-    const participant = allParticipants.find(p => p.nome === currentUser);
-    if (participant && participant.pass_hash && savedHash && participant.pass_hash !== savedHash) {
-      // Hash não bate — sessão inválida
-      currentUser = null;
-      localStorage.removeItem('bolao_user_' + GRUPO_ID);
-      toast('Sessão expirada. Entre novamente.', true);
-    }
-  }
-  renderAll();
-}
 
 async function loadAll() {
   try {
@@ -841,12 +817,15 @@ function copyLink() {
 function renderAdmin() {
   const el = document.getElementById('adminContent');
   if (!isAdmin) {
+    const semBolao = !GRUPO_ID || !bolaoConfig.admin_pass;
     el.innerHTML = `<div class="card">
       <div class="card-title">Acesso Admin</div>
       <div class="card-sub">Senha para gerenciar o bolão</div>
-      <div class="input-group"><label>Senha</label><input type="password" id="adminPassInput" placeholder="senha..." onkeypress="if(event.key==='Enter')checkAdmin()"></div>
-      <button class="btn btn-primary" onclick="checkAdmin()">Entrar</button>
-      ${!bolaoConfig.admin_pass ? '<div style="margin-top:12px"><button class="btn btn-secondary btn-sm" onclick="setupAdmin()">Criar bolão / Primeira vez</button></div>' : ''}
+      ${!semBolao ? `<div class="input-group"><label>Senha</label><input type="password" id="adminPassInput" placeholder="senha..." onkeypress="if(event.key==='Enter')checkAdmin()"></div>
+      <button class="btn btn-primary" onclick="checkAdmin()">Entrar</button>` : ''}
+      <div style="margin-top:12px"><button class="btn ${semBolao ? 'btn-primary btn-full' : 'btn-secondary btn-sm'}" onclick="setupAdmin()">
+        ${semBolao ? '⚽ Criar meu bolão' : 'Criar bolão / Primeira vez'}
+      </button></div>
     </div>`;
     return;
   }
