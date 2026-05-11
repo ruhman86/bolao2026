@@ -939,27 +939,30 @@ async function setupAdmin() {
   if (!pass || pass.length < 3) { toast('Senha muito curta!', true); return; }
   const name = prompt('Nome do bolão:') || 'Bolão Copa 2026';
 
-  // Gera ID se não tem
-  if (!GRUPO_ID) {
-    GRUPO_ID = Math.random().toString(36).substring(2, 8).toUpperCase();
-    const newUrl = window.location.href.split('?')[0] + '?g=' + GRUPO_ID;
-    await dbPost('boloes', { id: GRUPO_ID, nome: name, fase_aberta: 'grupo', admin_pass: pass });
-    isAdmin = true;
-    localStorage.setItem('bolao_admin_' + GRUPO_ID, '1');
-    await loadAll();
-    window.history.replaceState({}, '', newUrl);
-    toast('Bolão criado! 🎉');
-    renderAdmin();
-    document.getElementById('bolaoNameDisplay').textContent = name;
+  // Gera ID único
+  const newId = Math.random().toString(36).substring(2, 8).toUpperCase();
+  GRUPO_ID = newId;
+  STORAGE_KEY = 'bolao2026_' + GRUPO_ID;
+
+  try {
+    const result = await dbPost('boloes', { id: GRUPO_ID, nome: name, fase_aberta: 'grupo', admin_pass: pass });
+    if (result && result.error) {
+      toast('Erro ao criar: ' + result.message, true);
+      return;
+    }
+  } catch(e) {
+    toast('Erro de conexão. Verifique internet.', true);
     return;
   }
 
-  await dbUpsert('boloes', { id: GRUPO_ID, nome: name, fase_aberta: 'grupo', admin_pass: pass });
   isAdmin = true;
   localStorage.setItem('bolao_admin_' + GRUPO_ID, '1');
-  await loadAll();
-  toast('Bolão criado! 🎉');
-  renderAdmin();
+  bolaoConfig = { nome: name, fase_aberta: 'grupo', admin_pass: pass, id: GRUPO_ID };
+  document.getElementById('bolaoNameDisplay').textContent = name;
+
+  // Redireciona para URL com ID
+  const newUrl = window.location.href.split('?')[0] + '?g=' + GRUPO_ID;
+  window.location.href = newUrl;
 }
 
 async function updateConfig(field, value) {
