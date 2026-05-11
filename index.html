@@ -342,6 +342,7 @@ const FASE_CLASS = { grupo: 'phase-grupo', dezesseis: 'phase-oitavas', oitavas: 
 
 // ===== STATE =====
 let GRUPO_ID = null;
+let STORAGE_KEY = 'bolao2026_default';
 let bolaoConfig = { nome: 'Bolão Copa 2026', fase_aberta: 'grupo', admin_pass: '' };
 let currentUser = null;
 let isAdmin = false;
@@ -368,6 +369,7 @@ function jogoAberto(jogo) {
 async function init() {
   const params = new URLSearchParams(window.location.search);
   GRUPO_ID = params.get('g');
+  if (GRUPO_ID) STORAGE_KEY = 'bolao2026_' + GRUPO_ID;
   isAdmin = localStorage.getItem('bolao_admin_' + GRUPO_ID) === '1';
   currentUser = localStorage.getItem('bolao_user_' + GRUPO_ID) || null;
   if (!GRUPO_ID) {
