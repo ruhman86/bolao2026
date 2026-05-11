@@ -169,7 +169,7 @@
   <button class="nav-tab active" onclick="showView('palpites')">Palpites</button>
   <button class="nav-tab" onclick="showView('ranking')">Ranking</button>
   <button class="nav-tab" onclick="showView('participantes')">Galera</button>
-  <button class="nav-tab" id="adminTab" style="display:none" onclick="showView('admin')">Admin</button>
+  <button class="nav-tab" onclick="showView('admin')">Admin</button>
 </div>
 
 <div class="view active" id="view-palpites"><div id="palpitesContent"></div></div>
@@ -384,10 +384,6 @@ async function init() {
   // Nome: prioriza parâmetro URL ?nome=, depois config do banco
   const urlNome = new URLSearchParams(window.location.search).get('nome');
   document.getElementById('bolaoNameDisplay').textContent = urlNome || bolaoConfig.nome || 'Bolão Copa 2026';
-
-  // Mostra aba admin só para admin
-  const adminTab = document.getElementById('adminTab');
-  if (adminTab) adminTab.style.display = isAdmin ? '' : 'none';
 
   renderPalpites();
   if (isAdmin) showView('admin');
