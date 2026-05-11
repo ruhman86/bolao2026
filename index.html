@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+<!-- v3 FIXED -->
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Bolão Copa 2026</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     --verde: #00C853;
@@ -351,7 +352,24 @@ let allParticipants = []; // [{nome, joined_at}]
 async function init() {
   const params = new URLSearchParams(window.location.search);
   GRUPO_ID = params.get('g');
-
+  isAdmin = localStorage.getItem('bolao_admin_' + GRUPO_ID) === '1';
+  currentUser = localStorage.getItem('bolao_user_' + GRUPO_ID) || null;
+  if (!GRUPO_ID) {
+    document.getElementById('bolaoNameDisplay').textContent = 'Configure em Admin';
+    renderPalpites(); return;
+  }
+  await loadAll();
+  if (currentUser && !isAdmin) {
+    const sh = localStorage.getItem('bolao_pass_' + GRUPO_ID + '_' + currentUser);
+    const pt = allParticipants.find(p => p.nome === currentUser);
+    if (pt && pt.pass_hash && sh && pt.pass_hash !== sh) {
+      currentUser = null; localStorage.removeItem('bolao_user_' + GRUPO_ID);
+    }
+  }
+  document.getElementById('bolaoNameDisplay').textContent = bolaoConfig.nome || 'Bolao Copa 2026';
+  renderPalpites();
+  if (isAdmin) showView('admin');
+}
 
 async function loadAll() {
   try {
@@ -492,6 +510,7 @@ function calcPontosClassificacao(nome) {
 
 // state_classificados: Set com os times realmente classificados (preenchido pelo admin)
 let state_classificados = new Set();
+let state_terceiros = new Set();
 
 function loadClassificados() {
   const saved = localStorage.getItem(STORAGE_KEY + '_classif');
@@ -501,7 +520,17 @@ function loadClassificados() {
   // Também tenta carregar do Supabase
   dbGet('classificados', 'bolao_id=eq.' + GRUPO_ID + '&select=time_nome').then(data => {
     if (Array.isArray(data) && data.length > 0) {
-      state_classificados = new Set(data.map(d => d.time_nome));
+      state_classificados = new Set();
+      state_terceiros = new Set();
+      data.forEach(d => {
+        if (d.time_nome.startsWith('3o_')) {
+          const time = d.time_nome.slice(3);
+          state_terceiros.add(time);
+          state_classificados.add(time); // inclui no set geral p/ pontuação
+        } else {
+          state_classificados.add(d.time_nome);
+        }
+      });
     }
   }).catch(() => {});
 }
@@ -522,6 +551,25 @@ function toggleClassificado(time) {
   renderAdmin();
 }
 
+async function toggleTerceiro(time, grupo) {
+  const key3 = '3o_' + time; // prefixo para distinguir de 1o/2o
+  if (state_terceiros.has(time)) {
+    state_terceiros.delete(time);
+    state_classificados.delete(time);
+    await dbDelete('classificados', 'bolao_id=eq.' + GRUPO_ID + '&time_nome=eq.' + encodeURIComponent(key3));
+  } else {
+    if (state_terceiros.size >= 8) {
+      toast('Máximo de 8 terceiros. Desmarque um antes.', true);
+      return;
+    }
+    state_terceiros.add(time);
+    state_classificados.add(time); // para cálculo de pontos
+    await dbUpsert('classificados', { bolao_id: GRUPO_ID, time_nome: key3 });
+  }
+  saveClassificados();
+  renderAdmin();
+}
+
   const meusPalpites = allPalpites.filter(p => p.participant_name === nome);
   const ptsJogos = meusPalpites.reduce((acc, p) => {
     const pts = calcPontos(p.jogo_id, p);
@@ -532,7 +580,8 @@ function toggleClassificado(time) {
 
 // ===== RENDER ALL =====
 function renderAll() {
-  document.getElementById('bolaoNameDisplay').textContent = bolaoConfig.nome || 'Bolão Copa 2026';
+  const nome = bolaoConfig.nome || (GRUPO_ID ? 'Carregando...' : 'Crie seu bolão em Admin');
+  document.getElementById('bolaoNameDisplay').textContent = nome;
   renderPalpites();
 }
 
@@ -740,6 +789,8 @@ async function confirmJoin() {
   document.getElementById('joinModal').classList.remove('open');
   btn.disabled = false; btn.textContent = 'Entrar 🚀';
   renderAll();
+  // Força mostrar palpites com inputs
+  showView('palpites');
 }
 
 // Hash simples usando Web Crypto API
@@ -907,6 +958,40 @@ function renderAdmin() {
   html += `<div style="font-size:12px;color:var(--muted);margin-top:8px">
     ${state_classificados.size} time(s) marcado(s) como classificado(s)
   </div>`;
+
+  // === SEÇÃO MELHORES 3os ===
+  html += `</div>
+
+  <div class="card">
+    <div class="card-title">Melhores 3os Colocados</div>
+    <div class="card-sub">Marque os 8 terceiros que se classificaram para os 16-avos (${state_terceiros.size}/8 marcados)</div>`;
+
+  const todosTerceiros = ['A','B','C','D','E','F','G','H','I','J','K','L'].map(g => {
+    const timesG = [...new Set(JOGOS_BASE.filter(j => j.fase === 'grupo' && j.grupo === g).flatMap(j => [j.time1, j.time2]))];
+    return { grupo: g, times: timesG };
+  });
+
+  html += `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px">`;
+  todosTerceiros.forEach(({ grupo, times }) => {
+    times.forEach(time => {
+      const sel = state_terceiros.has(time);
+      const classif1ou2 = state_classificados.has(time);
+      if (classif1ou2) return; // pula quem já está marcado como 1o/2o
+      html += `<button onclick="toggleTerceiro('${time.replace(/'/g, "\'")}', '${grupo}')" style="
+        padding:5px 10px;border-radius:20px;border:1px solid ${sel ? 'var(--amarelo)' : 'var(--border)'};
+        background:${sel ? 'rgba(255,214,0,0.15)' : 'var(--surface)'};
+        color:${sel ? 'var(--amarelo)' : 'var(--muted)'};font-size:12px;cursor:pointer;font-weight:600">
+        ${sel ? '🥉 ' : ''}${time} <span style="font-size:10px;opacity:.6">${grupo}</span>
+      </button>`;
+    });
+  });
+
+  if (state_terceiros.size >= 8) {
+    html += `</div><div class="notice" style="margin-top:8px">✅ 8 terceiros confirmados</div>`;
+  } else {
+    html += `</div><div class="notice warning" style="margin-top:8px">Selecione ${8 - state_terceiros.size} mais</div>`;
+  }
+
   html += `</div>
 
   <div class="card">
@@ -957,12 +1042,13 @@ async function setupAdmin() {
 
   isAdmin = true;
   localStorage.setItem('bolao_admin_' + GRUPO_ID, '1');
+  localStorage.setItem('bolao_admin_pass_' + GRUPO_ID, pass);
   bolaoConfig = { nome: name, fase_aberta: 'grupo', admin_pass: pass, id: GRUPO_ID };
-  document.getElementById('bolaoNameDisplay').textContent = name;
 
   // Redireciona para URL com ID
   const newUrl = window.location.href.split('?')[0] + '?g=' + GRUPO_ID;
-  window.location.href = newUrl;
+  toast('Bolão criado! Redirecionando...');
+  setTimeout(() => { window.location.href = newUrl; }, 800);
 }
 
 async function updateConfig(field, value) {
